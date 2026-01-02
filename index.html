@@ -4,252 +4,805 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sompraz 52 - Premium Experience</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background: radial-gradient(circle at center, #1e293b 0%, #080c14 100%);
-            min-height: 100vh;
-            padding: 10px;
+        html, body {
             overflow-x: hidden;
-            color: #f1f5f9;
+            width: 100%;
+            height: 100%;
+            position: relative;
         }
 
-        .container { max-width: 1400px; margin: 0 auto; position: relative; }
+        body {
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            padding: 10px;
+            color: #ffffff;
+            background: #0a0a0a;
+            position: relative;
+        }
 
-        /* --- TITLE & MINI CARDS --- */
+        /* Red glow effects */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(ellipse at 0% 0%, rgba(139, 0, 0, 0.4) 0%, transparent 50%),
+                radial-gradient(ellipse at 100% 0%, rgba(139, 0, 0, 0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 100%, rgba(139, 0, 0, 0.2) 0%, transparent 50%),
+                radial-gradient(ellipse at 100% 100%, rgba(80, 0, 0, 0.3) 0%, transparent 40%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Floating icons container */
+        .floating-icons {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            overflow: hidden;
+        }
+
+        .poker-icon {
+            position: absolute;
+            will-change: transform;
+        }
+
+        /* Different shades for coin icons */
+        .poker-icon.shade-1 { color: rgba(80, 0, 0, 0.18); }
+        .poker-icon.shade-2 { color: rgba(120, 20, 20, 0.15); }
+        .poker-icon.shade-3 { color: rgba(40, 0, 0, 0.2); }
+        .poker-icon.shade-4 { color: rgba(100, 10, 10, 0.12); }
+        .poker-icon.shade-5 { color: rgba(25, 25, 25, 0.22); }
+        .poker-icon.shade-6 { color: rgba(60, 0, 0, 0.17); }
+
+        .container { 
+            max-width: 1400px; 
+            margin: 0 auto; 
+            position: relative; 
+            z-index: 10; 
+        }
+
+        /* --- TITLE --- */
         .title-wrap {
-            display: flex; align-items: center; justify-content: center;
-            gap: 12px; margin-bottom: 5px; opacity: 0; transition: 1s ease;
+            display: flex; 
+            flex-direction: column;
+            align-items: center; 
+            justify-content: center;
+            gap: 12px; 
+            margin-bottom: 20px; 
+            opacity: 0; 
+            transition: 1s ease;
+            padding-top: 10px;
         }
         .title-wrap.visible { opacity: 1; }
 
         h1 {
-            font-size: clamp(1.1rem, 4.5vw, 2.5rem); font-weight: 900;
-            background: linear-gradient(to bottom, #fff 20%, #3b82f6 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            font-family: 'Pacifico', cursive;
+            font-size: clamp(1.5rem, 6vw, 4rem); 
+            font-weight: 400;
+            color: #ffffff;
+            text-align: center;
+            letter-spacing: 0.02em;
+            text-shadow: 
+                0 0 40px rgba(255, 255, 255, 0.2),
+                2px 2px 4px rgba(0, 0, 0, 0.5);
+            -webkit-text-stroke: 0.5px rgba(255, 255, 255, 0.8);
         }
 
-        .card-stack { position: relative; width: 75px; height: 60px; display: flex; align-items: center; }
-
-        .mini-card {
-            width: 40px; height: 56px; background: white; border-radius: 4px;
-            position: absolute; display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            box-shadow: 2px 2px 10px rgba(0,0,0,0.5); font-family: serif;
+        h1 .big-number {
+            font-size: 1.3em;
+            display: inline-block;
+            text-shadow: 
+                0 0 50px rgba(255, 255, 255, 0.3),
+                3px 3px 6px rgba(0, 0, 0, 0.6);
         }
-        .card-five { z-index: 2; color: #d12d36; border: 1px solid #eee; left: 0; }
-        .card-two { 
-            z-index: 1; color: #1a1a1a; left: 28px; 
-            transform: rotate(18deg); transform-origin: bottom center;
-            animation: gentleSway 4s ease-in-out infinite; border: 1px solid #ddd;
-        }
-        .suit-mini { font-size: 0.6rem; position: absolute; top: 3px; left: 4px; }
-        .number-main { font-size: 1.3rem; font-weight: bold; margin-top: 4px; }
 
-        @keyframes gentleSway { 0%, 100% { transform: rotate(15deg); } 50% { transform: rotate(22deg); } }
-
-        .subtitle {
-            text-align: center; color: #94a3b8; margin-bottom: 20px;
-            text-transform: uppercase; letter-spacing: 2px;
-            font-size: clamp(0.6rem, 2vw, 0.8rem); opacity: 0; transition: 1s ease 0.3s;
+        /* White pill container for logo */
+        .logo-pill {
+            background: #ffffff;
+            padding: 6px 20px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 
+                0 4px 20px rgba(0, 0, 0, 0.3),
+                0 0 30px rgba(255, 255, 255, 0.08);
         }
-        .subtitle.visible { opacity: 1; }
+
+        .logo-pill img {
+            height: clamp(16px, 3vw, 28px);
+            width: auto;
+        }
 
         /* --- START SCREEN --- */
         .start-screen {
-            position: fixed; inset: 0; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; z-index: 2000;
-            background: #080c14; transition: opacity 0.6s ease;
+            position: fixed; 
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex; 
+            flex-direction: column;
+            align-items: center; 
+            justify-content: center; 
+            z-index: 2000;
+            background: #0a0a0a;
+            transition: opacity 0.4s ease;
         }
+
+        .start-screen::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(ellipse at 0% 0%, rgba(139, 0, 0, 0.5) 0%, transparent 50%),
+                radial-gradient(ellipse at 100% 0%, rgba(139, 0, 0, 0.4) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(100, 0, 0, 0.2) 0%, transparent 60%),
+                radial-gradient(ellipse at 100% 100%, rgba(80, 0, 0, 0.4) 0%, transparent 40%);
+            pointer-events: none;
+        }
+
         .start-screen.hidden { opacity: 0; pointer-events: none; }
+
+        .start-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .start-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease;
+        }
+
+        .start-header.move-up {
+            transform: translateY(-120px);
+            opacity: 0;
+        }
+
+        .start-title {
+            font-family: 'Pacifico', cursive;
+            font-size: clamp(1.5rem, 7vw, 4rem);
+            font-weight: 400;
+            color: #ffffff;
+            margin-bottom: 8px;
+            text-align: center;
+            letter-spacing: 0.02em;
+            text-shadow: 
+                0 0 40px rgba(255, 255, 255, 0.2),
+                2px 2px 4px rgba(0, 0, 0, 0.5);
+            -webkit-text-stroke: 0.5px rgba(255, 255, 255, 0.8);
+        }
+
+        .start-title .big-number {
+            font-size: 1.3em;
+            display: inline-block;
+            text-shadow: 
+                0 0 50px rgba(255, 255, 255, 0.3),
+                3px 3px 6px rgba(0, 0, 0, 0.6);
+        }
+
+        .start-logo-pill {
+            background: #ffffff;
+            padding: 6px 18px;
+            border-radius: 50px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .start-logo-pill img {
+            height: clamp(14px, 3vw, 24px);
+            width: auto;
+            display: block;
+        }
+
+        .start-card-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        /* The animated card that goes to bottom */
+        .start-card-animated {
+            position: fixed;
+            width: min(160px, 38vw);
+            aspect-ratio: 2.5/3.5;
+            background: url('back.png') center/cover;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 
+                0 0 50px rgba(180, 0, 0, 0.4),
+                0 15px 40px rgba(0, 0, 0, 0.5);
+            z-index: 6000;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        .start-card-animated.animating {
+            transition: top 1s cubic-bezier(0.4, 0, 0.2, 1), 
+                        width 1s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
         .start-card {
-            width: min(200px, 45vw); aspect-ratio: 2.5/3.5;
-            background: url('back.png') center/cover; border-radius: 15px;
-            cursor: pointer; border: 2px solid #3b82f6;
-            box-shadow: 0 0 30px rgba(59, 130, 246, 0.4); margin-bottom: 20px;
+            width: min(160px, 38vw); 
+            aspect-ratio: 2.5/3.5;
+            background: url('back.png') center/cover; 
+            border-radius: 12px;
+            cursor: pointer; 
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 
+                0 0 50px rgba(180, 0, 0, 0.4),
+                0 15px 40px rgba(0, 0, 0, 0.5);
+            margin-bottom: 15px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.2s ease;
+            animation: cardGlow 3s ease-in-out infinite;
+        }
+
+        .start-card.hidden {
+            opacity: 0;
+        }
+
+        @keyframes cardGlow {
+            0%, 100% { box-shadow: 0 0 40px rgba(180, 0, 0, 0.4), 0 15px 40px rgba(0, 0, 0, 0.5); }
+            50% { box-shadow: 0 0 70px rgba(180, 0, 0, 0.6), 0 20px 50px rgba(0, 0, 0, 0.6); }
+        }
+
+        .start-card:hover {
+            transform: translateY(-6px) scale(1.02);
+        }
+
+        .start-card:active {
+            transform: scale(0.98);
+        }
+
+        .tap-text {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600; 
+            letter-spacing: 3px; 
+            color: rgba(255, 255, 255, 0.85);
+            font-size: clamp(0.65rem, 2.5vw, 0.85rem);
+            text-transform: uppercase;
+            animation: textPulse 2s ease-in-out infinite;
+            transition: opacity 0.2s ease;
+        }
+
+        .tap-text.hidden {
+            opacity: 0;
+            animation: none;
+        }
+
+        @keyframes textPulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        /* Dealer card - positioned at exact bottom center */
+        .dealer-card {
+            position: fixed;
+            left: 50%;
+            bottom: 25px;
+            transform: translateX(-50%);
+            width: clamp(55px, 14vw, 75px);
+            aspect-ratio: 2.5/3.5;
+            background: url('back.png') center/cover;
+            border-radius: 8px;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 
+                0 0 30px rgba(180, 0, 0, 0.5),
+                0 10px 30px rgba(0, 0, 0, 0.5);
+            z-index: 5000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .dealer-card.visible {
+            opacity: 1;
+        }
+
+        .dealer-card.dealing-active {
+            animation: dealerPulse 0.12s ease-in-out infinite;
+        }
+
+        @keyframes dealerPulse {
+            0%, 100% { transform: translateX(-50%) scale(1) rotate(0deg); }
+            50% { transform: translateX(-50%) scale(0.96) rotate(-2deg); }
         }
 
         /* --- CARD GRID --- */
         .card-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(clamp(70px, 9vw, 100px), 1fr));
-            gap: 10px; width: 100%; padding-bottom: 80px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px; 
+            width: 100%; 
+            padding-bottom: 100px;
         }
 
-        /* LANDSCAPE OPTIMIZATION */
+        @media (min-width: 360px) {
+            .card-grid { grid-template-columns: repeat(5, 1fr); gap: 7px; }
+        }
+
+        @media (min-width: 480px) {
+            .card-grid { grid-template-columns: repeat(6, 1fr); gap: 8px; }
+        }
+
+        @media (min-width: 768px) {
+            .card-grid { grid-template-columns: repeat(8, 1fr); gap: 10px; }
+        }
+
+        @media (min-width: 1024px) {
+            .card-grid { grid-template-columns: repeat(10, 1fr); gap: 10px; }
+        }
+
+        @media (min-width: 1200px) {
+            .card-grid { grid-template-columns: repeat(13, 1fr); gap: 12px; }
+        }
+
+        /* Landscape phones */
         @media (max-height: 500px) and (orientation: landscape) {
-            .card-grid { grid-template-columns: repeat(auto-fill, minmax(58px, 1fr)); gap: 6px; }
-            .modal-card { width: 180px !important; }
-            .close-btn { top: 10px !important; right: 10px !important; color: #000; background: #fff; }
+            .card-grid { 
+                grid-template-columns: repeat(11, 1fr); 
+                gap: 4px;
+                padding-bottom: 80px;
+            }
+            .title-wrap { 
+                padding-top: 5px; 
+                margin-bottom: 10px;
+                gap: 6px;
+            }
+            h1 { font-size: clamp(1rem, 4vw, 1.5rem); }
+            .logo-pill { padding: 4px 12px; }
+            .logo-pill img { height: 14px; }
+            .dealer-card { bottom: 10px; width: 40px; }
         }
 
-        .card-container { perspective: 1000px; aspect-ratio: 2.5/3.5; opacity: 0; }
+        .card-container { 
+            perspective: 1000px; 
+            aspect-ratio: 2.5/3.5; 
+            opacity: 0;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .card-container.disabled {
+            pointer-events: none;
+            cursor: default;
+        }
+
+        .card-container:hover:not(.disabled) {
+            transform: translateY(-4px);
+        }
         
-        /* YOUR REQUESTED THROW ANIMATION */
         .card-container.dealing { 
-            animation: dealFromVisibleBottom 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards; 
+            animation: dealFromBottom 0.5s cubic-bezier(0.2, 0.8, 0.3, 1) forwards; 
         }
 
-        @keyframes dealFromVisibleBottom {
-            0% { opacity: 0; transform: translate(var(--offset-x), var(--offset-y)) scale(0.3); }
-            30% { opacity: 1; }
-            100% { opacity: 1; transform: translate(0, 0) scale(1); }
+        @keyframes dealFromBottom {
+            0% { 
+                opacity: 0; 
+                transform: translate(var(--deal-x), var(--deal-y)) scale(0.3) rotate(var(--deal-rotation)); 
+            }
+            50% { 
+                opacity: 1; 
+            }
+            100% { 
+                opacity: 1; 
+                transform: translate(0, 0) scale(1) rotate(0deg); 
+            }
         }
 
-        .card { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.6s; }
+        .card { 
+            width: 100%; 
+            height: 100%; 
+            position: relative; 
+            transform-style: preserve-3d; 
+            transition: transform 0.6s; 
+        }
+
         .card.spinning { animation: fastSpin 1.2s cubic-bezier(0.4, 0, 0.2, 1); }
-        @keyframes fastSpin { 0% { transform: rotateY(0deg); } 100% { transform: rotateY(2160deg); } }
+
+        @keyframes fastSpin { 
+            0% { transform: rotateY(0deg); } 
+            100% { transform: rotateY(2160deg); } 
+        }
+
         .card.flipped { transform: rotateY(180deg); }
-        .card-face { position: absolute; inset: 0; backface-visibility: hidden; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); }
+
+        .card-face { 
+            position: absolute; 
+            inset: 0; 
+            backface-visibility: hidden; 
+            border-radius: 6px; 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 
+                0 4px 15px rgba(0, 0, 0, 0.4),
+                0 0 10px rgba(139, 0, 0, 0.15);
+        }
+
         .card-back { background: url('back.png') center/cover; }
-        .card-front { transform: rotateY(180deg); background: white; }
+
+        .card-front { 
+            transform: rotateY(180deg); 
+            background: linear-gradient(145deg, #ffffff 0%, #f5f5f5 100%);
+        }
+
         .card-face img { width: 100%; height: 100%; object-fit: contain; }
 
         /* --- MODAL --- */
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 3000; backdrop-filter: blur(10px); }
+        .modal { 
+            position: fixed; 
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 10, 0.95); 
+            display: none; 
+            align-items: center; 
+            justify-content: center; 
+            z-index: 10000; 
+            backdrop-filter: blur(15px);
+            padding: 15px;
+        }
+
         .modal.active { display: flex; }
-        .modal-card { width: min(300px, 85vw); aspect-ratio: 2.5/3.5; background: white; border-radius: 20px; padding: 10px; animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); position: relative; }
+
+        .modal-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            max-width: 350px;
+        }
+
+        .modal-card { 
+            width: 100%;
+            max-width: 260px;
+            aspect-ratio: 2.5/3.5; 
+            background: linear-gradient(145deg, #ffffff 0%, #f8f8f8 100%);
+            border-radius: 16px; 
+            padding: 8px; 
+            animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
+            box-shadow: 
+                0 0 50px rgba(180, 0, 0, 0.3),
+                0 20px 60px rgba(0, 0, 0, 0.6);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+        }
+
         @keyframes popIn { from { transform: scale(0.5); opacity: 0; } }
-        .close-btn { position: absolute; top: -50px; right: 0; background: white; border: none; width: 44px; height: 44px; border-radius: 50%; cursor: pointer; font-weight: bold; }
+
+        .close-btn { 
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            width: 40px; 
+            height: 40px; 
+            border-radius: 50%; 
+            cursor: pointer; 
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: scale(1.1);
+        }
 
         .qr-message {
-            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%) translateY(100px);
-            background: #3b82f6; color: white; padding: 12px 24px; border-radius: 50px;
-            font-weight: 700; z-index: 4000; transition: 0.5s; white-space: nowrap;
-            font-size: clamp(10px, 3.5vw, 16px); opacity: 0;
+            background: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+            color: white; 
+            padding: 8px 16px; 
+            border-radius: 50px;
+            font-weight: 600; 
+            white-space: nowrap;
+            font-size: clamp(9px, 2.5vw, 12px); 
+            box-shadow: 0 8px 30px rgba(139, 0, 0, 0.4);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease;
         }
-        .qr-message.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
-        .confetti { position: fixed; z-index: 3500; pointer-events: none; }
-        @keyframes confettiFall { to { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
-        .firework { position: fixed; width: 4px; height: 4px; border-radius: 50%; z-index: 3500; pointer-events: none; }
-        @keyframes fireworkExplode { 0% { transform: translate(0, 0); opacity: 1; } 100% { transform: translate(var(--x), var(--y)); opacity: 0; } }
+        .qr-message.show { 
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Modal responsive */
+        @media (min-height: 700px) {
+            .modal-content { gap: 12px; }
+            .modal-card { max-width: 280px; }
+        }
+
+        @media (min-height: 900px) {
+            .modal-content { gap: 15px; }
+            .modal-card { max-width: 300px; }
+        }
+
+        /* Small height screens / landscape */
+        @media (max-height: 600px) {
+            .modal-content { 
+                gap: 8px; 
+            }
+            .modal-card { 
+                max-width: 35vh;
+            }
+            .close-btn { 
+                width: 36px; 
+                height: 36px; 
+                font-size: 0.9rem; 
+            }
+            .qr-message { 
+                padding: 6px 14px; 
+                font-size: 10px; 
+            }
+        }
+
+        /* Very small landscape (phones) */
+        @media (max-height: 450px) and (orientation: landscape) {
+            .modal {
+                padding: 10px;
+            }
+            .modal-content {
+                flex-direction: column;
+                gap: 6px;
+            }
+            .modal-card {
+                max-width: none;
+                width: auto;
+                height: 55vh;
+            }
+            .close-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 0.85rem;
+            }
+            .qr-message {
+                padding: 5px 12px;
+                font-size: 9px;
+            }
+        }
     </style>
 </head>
 
 <body>
+    <!-- Floating coin icons -->
+    <div class="floating-icons" id="floatingIcons"></div>
 
-    <div class="qr-message" id="qrMessage">🎉 Scan the QR Code to Get Your Article</div>
+    <!-- Animated card that flies to bottom -->
+    <div class="start-card-animated" id="startCardAnimated"></div>
+
+    <!-- Dealer card at bottom -->
+    <div class="dealer-card" id="dealerCard"></div>
 
     <div class="start-screen" id="startScreen">
-        <div class="start-card" id="startCard"></div>
-        <div style="font-weight: 700; letter-spacing: 2px; color: white;">TAP TO PLAY</div>
+        <div class="start-content">
+            <div class="start-header" id="startHeader">
+                <div class="start-title"><span class="big-number">52</span> Reasons to Win</div>
+                <div class="start-logo-pill">
+                    <img src="sompraz.png" alt="Sompraz">
+                </div>
+            </div>
+            
+            <div class="start-card-wrapper" id="startCardWrapper">
+                <div class="start-card" id="startCard"></div>
+                <div class="tap-text" id="tapText">TAP TO PLAY</div>
+            </div>
+        </div>
     </div>
 
     <div class="container">
         <div class="title-wrap" id="titleWrap">
-            <h1>Play</h1>
-            <div class="card-stack">
-                <div class="mini-card card-two">
-                    <span class="suit-mini">♠</span>
-                    <span class="number-main">2</span>
-                </div>
-                <div class="mini-card card-five">
-                    <span class="suit-mini">♥</span>
-                    <span class="number-main">5</span>
-                </div>
+            <h1><span class="big-number">52</span> Reasons to Win</h1>
+            <div class="logo-pill">
+                <img src="sompraz.png" alt="Sompraz">
             </div>
-            <h1>Reasons to Win</h1>
         </div>
-        <p class="subtitle" id="subtitle">Sompraz</p>
         <div class="card-grid" id="cardGrid"></div>
     </div>
 
     <div class="modal" id="modal">
-        <div class="modal-card">
+        <div class="modal-content">
+            <div class="modal-card">
+                <img id="modalImage" src="f1.png" style="width:100%; height:100%; object-fit:contain; border-radius: 10px;">
+            </div>
             <button class="close-btn" id="closeBtn">✕</button>
-            <img id="modalImage" src="f1.png" style="width:100%; height:100%; object-fit:contain;">
+            <div class="qr-message" id="qrMessage">🎉 Scan the QR Code to Get Your Article</div>
         </div>
     </div>
+
+    <!-- Shuffle sound -->
+    <audio id="shuffleSound" preload="auto">
+        <source src="shuffle.wav" type="audio/wav">
+        <source src="shuffle.mp3" type="audio/mpeg">
+    </audio>
 
     <script>
         const cardGrid = document.getElementById('cardGrid');
         const startScreen = document.getElementById('startScreen');
+        const startCard = document.getElementById('startCard');
+        const startCardAnimated = document.getElementById('startCardAnimated');
+        const startCardWrapper = document.getElementById('startCardWrapper');
+        const startHeader = document.getElementById('startHeader');
+        const tapText = document.getElementById('tapText');
         const titleWrap = document.getElementById('titleWrap');
-        const subtitle = document.getElementById('subtitle');
         const modal = document.getElementById('modal');
         const qrMessage = document.getElementById('qrMessage');
+        const shuffleSound = document.getElementById('shuffleSound');
+        const floatingIcons = document.getElementById('floatingIcons');
+        const dealerCard = document.getElementById('dealerCard');
         
         let cards = [];
-        let confettiInterval, fireworkInterval;
-        const colors = ['#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#ef4444'];
+        let coins = [];
+        let coinsInitialized = false;
+        let dealingInProgress = false;
+
+        // ONLY coins
+        const coinSymbol = '🪙';
+
+        // --- FLOATING COINS (reduced by 30%) ---
+        class FloatingCoin {
+            constructor(x, y, size) {
+                this.element = document.createElement('div');
+                this.element.className = 'poker-icon shade-' + (Math.floor(Math.random() * 6) + 1);
+                this.element.textContent = coinSymbol;
+                this.element.style.fontSize = size + 'px';
+                
+                this.element.style.left = x + '%';
+                this.element.style.top = y + '%';
+                
+                const initialRange = 30;
+                this.currentX = (Math.random() - 0.5) * initialRange;
+                this.currentY = (Math.random() - 0.5) * initialRange;
+                
+                this.element.style.transform = `translate(${this.currentX}px, ${this.currentY}px)`;
+                
+                floatingIcons.appendChild(this.element);
+                
+                setTimeout(() => this.startMoving(), 10);
+            }
+            
+            startMoving() {
+                this.element.style.transition = 'transform 4s ease-in-out';
+                this.moveToNewTarget();
+            }
+            
+            moveToNewTarget() {
+                const range = 40;
+                const targetX = (Math.random() - 0.5) * range;
+                const targetY = (Math.random() - 0.5) * range;
+                
+                this.element.style.transform = `translate(${targetX}px, ${targetY}px)`;
+                
+                setTimeout(() => this.moveToNewTarget(), 4000 + Math.random() * 2000);
+            }
+        }
+
+        function initFloatingCoins() {
+            if (coinsInitialized) return;
+            coinsInitialized = true;
+            
+            floatingIcons.innerHTML = '';
+            coins = [];
+            
+            // Reduced by 30% - ~22 coins
+            const positions = [
+                {x: 8, y: 6}, {x: 35, y: 4}, {x: 60, y: 8}, {x: 88, y: 5},
+                {x: 15, y: 20}, {x: 45, y: 22}, {x: 75, y: 18},
+                {x: 5, y: 38}, {x: 30, y: 35}, {x: 55, y: 40}, {x: 82, y: 36}, {x: 95, y: 42},
+                {x: 18, y: 55}, {x: 50, y: 52}, {x: 78, y: 58},
+                {x: 8, y: 72}, {x: 38, y: 75}, {x: 65, y: 70}, {x: 92, y: 74},
+                {x: 22, y: 90}, {x: 55, y: 88}, {x: 80, y: 92}
+            ];
+            
+            positions.forEach(pos => {
+                const size = 18 + Math.random() * 20;
+                coins.push(new FloatingCoin(pos.x, pos.y, size));
+            });
+        }
+
+        initFloatingCoins();
 
         // --- AUDIO ENGINE ---
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        // Realistic card dealing sound - "shhhp" / "supp" sound
+        function playCardDealSound() {
+            const bufferSize = 4096;
+            const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const output = noiseBuffer.getChannelData(0);
+            
+            for (let i = 0; i < bufferSize; i++) {
+                output[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufferSize, 3);
+            }
+            
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = noiseBuffer;
+            
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.setValueAtTime(3000, audioCtx.currentTime);
+            filter.Q.setValueAtTime(1, audioCtx.currentTime);
+            
+            const gain = audioCtx.createGain();
+            gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.06);
+            
+            noise.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            noise.start(audioCtx.currentTime);
+            noise.stop(audioCtx.currentTime + 0.06);
+        }
+        
         function playSound(type) {
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
-            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.connect(gain); 
+            gain.connect(audioCtx.destination);
             
             if(type === 'flip') {
-                osc.type = 'sine'; osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                osc.type = 'sine'; 
+                osc.frequency.setValueAtTime(400, audioCtx.currentTime);
                 osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.1);
                 gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
                 gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.1);
-            } else if(type === 'deal') {
-                osc.type = 'triangle'; osc.frequency.setValueAtTime(800, audioCtx.currentTime);
-                osc.frequency.linearRampToValueAtTime(200, audioCtx.currentTime + 0.05);
-                gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
-                gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.05);
             }
-            osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+            osc.start(); 
+            osc.stop(audioCtx.currentTime + 0.1);
         }
 
-        function triggerHaptic() { if (navigator.vibrate) navigator.vibrate(15); }
-
-        // --- CELEBRATION ---
-        function createConfetti() {
-            for (let i = 0; i < 12; i++) {
-                const c = document.createElement('div');
-                c.className = 'confetti';
-                c.style.left = Math.random() * 100 + '%';
-                c.style.top = '-10px';
-                c.style.background = colors[Math.floor(Math.random() * colors.length)];
-                c.style.width = '8px'; c.style.height = '6px';
-                c.style.animation = `confettiFall 3s linear forwards`;
-                document.body.appendChild(c);
-                setTimeout(() => c.remove(), 3000);
-            }
-        }
-
-        function spawnFirework() {
-            const x = Math.random() * window.innerWidth;
-            const y = Math.random() * (window.innerHeight / 2);
-            for (let i = 0; i < 20; i++) {
-                const f = document.createElement('div');
-                f.className = 'firework';
-                f.style.left = x + 'px'; f.style.top = y + 'px';
-                f.style.background = colors[Math.floor(Math.random() * colors.length)];
-                const angle = (Math.PI * 2 * i) / 20;
-                const velocity = Math.random() * 80 + 80;
-                f.style.setProperty('--x', Math.cos(angle) * velocity + 'px');
-                f.style.setProperty('--y', Math.sin(angle) * velocity + 'px');
-                f.style.animation = `fireworkExplode 1s ease-out forwards`;
-                document.body.appendChild(f);
-                setTimeout(() => f.remove(), 1000);
-            }
-        }
-
-        function createDoubleFireworks() {
-            spawnFirework();
-            spawnFirework();
+        function triggerHaptic() { 
+            if (navigator.vibrate) navigator.vibrate(15); 
         }
 
         // --- GAMEPLAY ---
         function createCards() {
             for (let i = 1; i <= 52; i++) {
                 const container = document.createElement('div');
-                container.className = 'card-container';
+                container.className = 'card-container disabled'; // Start disabled
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.innerHTML = `<div class="card-face card-back"></div><div class="card-face card-front"><img src="f1.png"></div>`;
                 container.appendChild(card);
                 
                 container.onclick = () => {
+                    // Don't allow clicks during dealing
+                    if (dealingInProgress) return;
+                    
                     if (!card.classList.contains('flipped') && !card.classList.contains('spinning')) {
                         triggerHaptic();
                         playSound('flip');
@@ -260,8 +813,6 @@
                             setTimeout(() => {
                                 modal.classList.add('active');
                                 qrMessage.classList.add('show');
-                                confettiInterval = setInterval(createConfetti, 500);
-                                fireworkInterval = setInterval(createDoubleFireworks, 1000);
                             }, 300);
                         }, 1200);
                     }
@@ -271,43 +822,177 @@
             }
         }
 
-        function shuffleAndDeal() {
-            const targetX = window.innerWidth / 2;
-            const targetY = window.innerHeight + 100;
-
-            cards.forEach((card, idx) => {
-                const rect = card.getBoundingClientRect();
-                const offX = targetX - (rect.left + rect.width / 2);
-                const offY = targetY - (rect.top + rect.height / 2);
-                
-                card.style.setProperty('--offset-x', offX + 'px');
-                card.style.setProperty('--offset-y', offY + 'px');
-                
-                setTimeout(() => {
-                    playSound('deal');
-                    card.classList.add('dealing');
-                }, idx * 60); 
-            });
+        function playShuffleSound() {
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            
+            shuffleSound.currentTime = 0;
+            shuffleSound.volume = 1.0;
+            
+            const playPromise = shuffleSound.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.log('Audio play failed:', error);
+                });
+            }
         }
 
-        document.getElementById('startCard').onclick = () => {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            startScreen.classList.add('hidden');
+        function shuffleAndDeal() {
+            dealingInProgress = true;
+            dealerCard.classList.add('dealing-active');
+            
+            // Get dealer card position
+            const dealerRect = dealerCard.getBoundingClientRect();
+            const dealerCenterX = dealerRect.left + dealerRect.width / 2;
+            const dealerCenterY = dealerRect.top + dealerRect.height / 2;
+            
+            // Play shuffle sound
+            playShuffleSound();
+
+            const dealDelay = 50;
+            const totalDealDuration = (52 * dealDelay) + 500;
+
+            cards.forEach((container, idx) => {
+                const rect = container.getBoundingClientRect();
+                const cardCenterX = rect.left + rect.width / 2;
+                const cardCenterY = rect.top + rect.height / 2;
+                
+                const offsetX = dealerCenterX - cardCenterX;
+                const offsetY = dealerCenterY - cardCenterY;
+                const rotation = (Math.random() - 0.5) * 20;
+                
+                container.style.setProperty('--deal-x', offsetX + 'px');
+                container.style.setProperty('--deal-y', offsetY + 'px');
+                container.style.setProperty('--deal-rotation', rotation + 'deg');
+                
+                setTimeout(() => {
+                    container.classList.add('dealing');
+                    playCardDealSound();
+                }, idx * dealDelay); 
+            });
+
+            // Enable cards after dealing is complete
             setTimeout(() => {
-                startScreen.style.display = 'none';
-                titleWrap.classList.add('visible');
-                subtitle.classList.add('visible');
-                shuffleAndDeal();
-            }, 600);
+                shuffleSound.pause();
+                shuffleSound.currentTime = 0;
+                dealerCard.classList.remove('dealing-active');
+                
+                // Enable all cards for clicking
+                dealingInProgress = false;
+                cards.forEach(container => {
+                    container.classList.remove('disabled');
+                });
+                
+                setTimeout(() => {
+                    dealerCard.classList.remove('visible');
+                }, 500);
+            }, totalDealDuration);
+        }
+
+        document.getElementById('startCard').onclick = function(e) {
+            e.preventDefault();
+            
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            
+            shuffleSound.load();
+            
+            // IMMEDIATELY hide tap text
+            tapText.classList.add('hidden');
+            
+            // Move title UP
+            startHeader.classList.add('move-up');
+            
+            // Get the start card position
+            const startCardRect = startCard.getBoundingClientRect();
+            
+            // Get dealer card position (where we want to end up)
+            const dealerRect = dealerCard.getBoundingClientRect();
+            
+            // Position the animated card exactly where the start card is
+            startCardAnimated.style.left = (startCardRect.left + startCardRect.width / 2) + 'px';
+            startCardAnimated.style.top = startCardRect.top + 'px';
+            startCardAnimated.style.transform = 'translateX(-50%)';
+            startCardAnimated.style.opacity = '1';
+            startCardAnimated.style.width = startCardRect.width + 'px';
+            
+            // Hide the original start card immediately
+            startCard.classList.add('hidden');
+            
+            // Calculate end position (bottom center, aligned with dealer card)
+            const endTop = window.innerHeight - 25 - dealerRect.height;
+            const endWidth = dealerRect.width;
+            
+            // Start the animation after a tiny delay
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    // Add transition class for smooth animation
+                    startCardAnimated.classList.add('animating');
+                    
+                    // Animate: move down, shrink, and fade out (all start together)
+                    startCardAnimated.style.top = endTop + 'px';
+                    startCardAnimated.style.width = endWidth + 'px';
+                    startCardAnimated.style.opacity = '0'; // Fades from start to end
+                    
+                    // Fade in dealer card synced with fade out (starts after halfway)
+                    setTimeout(() => {
+                        dealerCard.classList.add('visible');
+                    }, 500);
+                });
+            });
+            
+            // After card animation completes, transition to game
+            setTimeout(() => {
+                // Hide start screen
+                startScreen.classList.add('hidden');
+                
+                setTimeout(() => {
+                    startScreen.style.display = 'none';
+                    startCardAnimated.style.display = 'none';
+                    titleWrap.classList.add('visible');
+                    
+                    // Start dealing
+                    setTimeout(() => {
+                        shuffleAndDeal();
+                    }, 200);
+                }, 400);
+            }, 1000);
         };
 
         document.getElementById('closeBtn').onclick = () => {
             modal.classList.remove('active');
             qrMessage.classList.remove('show');
-            clearInterval(confettiInterval);
-            clearInterval(fireworkInterval);
             cards.forEach(c => c.querySelector('.card').classList.remove('flipped'));
         };
+
+        modal.onclick = (e) => {
+            if (e.target === modal) {
+                document.getElementById('closeBtn').click();
+            }
+        };
+
+        window.addEventListener('load', () => {
+            shuffleSound.load();
+        });
+
+        document.addEventListener('touchstart', function initAudio() {
+            shuffleSound.load();
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            document.removeEventListener('touchstart', initAudio);
+        }, { once: true });
+
+        document.addEventListener('click', function initAudioClick() {
+            shuffleSound.load();
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            document.removeEventListener('click', initAudioClick);
+        }, { once: true });
 
         createCards();
     </script>
